@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="theme-color" content="#111827" />
+  <meta
+    name="description"
+    content="Mini Mart POS สำหรับร้านค้า"
+  />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <title>Mini Mart POS</title>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-logo">MM</div>
+
+      <div>
+        <strong>Mini Mart</strong>
+        <span>POS System</span>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-view="dashboard">
+        📊 Dashboard
+      </button>
+
+      <button class="nav-item" data-view="pos">
+        🛒 ขายสินค้า
+      </button>
+
+      <button class="nav-item" data-view="products">
+        📦 สินค้า / Stock
+      </button>
+
+      <button class="nav-item" data-view="expenses">
+        💸 ค่าใช้จ่าย
+      </button>
+
+      <button class="nav-item" data-view="reports">
+        📈 รายงาน
+      </button>
+    </nav>
+
+  </aside>
+
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">
+          ภาพรวมร้านวันนี้
+        </p>
+      </div>
+
+      <button
+        class="btn primary"
+        data-go="pos"
+      >
+        + ขายสินค้า
+      </button>
+
+    </header>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section
+      id="dashboard"
+      class="view active"
+    >
+
+      <div
+        id="dashboardCards"
+        class="cards"
+      ></div>
+
+
+      <div class="dashboard-grid">
+
+        <div class="panel">
+
+          <div class="panel-header">
+            <h2>สินค้าใกล้หมด</h2>
+
+            <button
+              class="link-button"
+              data-go="products"
+            >
+              ดูทั้งหมด
+            </button>
+          </div>
+
+          <div id="lowStock"></div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <div class="panel-header">
+            <h2>ยอดขายล่าสุด</h2>
+
+            <button
+              class="link-button"
+              data-go="reports"
+            >
+              รายงาน
+            </button>
+          </div>
+
+          <div id="recentSales"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= POS ================= -->
+
+    <section
+      id="pos"
+      class="view"
+    >
+
+      <div class="pos-layout">
+
+
+        <!-- PRODUCTS -->
+
+        <div class="panel">
+
+          <div class="toolbar">
+
+            <input
+              id="posSearch"
+              class="input"
+              type="text"
+              placeholder="ค้นหาสินค้า หรือสแกน Barcode..."
+              autocomplete="off"
+            />
+
+          </div>
+
+          <div
+            id="productGrid"
+            class="product-grid"
+          ></div>
+
+        </div>
+
+
+        <!-- CART -->
+
+        <div class="panel cart-panel">
+
+          <div class="panel-header">
+
+            <h2>รายการขาย</h2>
+
+            <button
+              id="clearCart"
+              class="link-button danger"
+            >
+              ล้าง
+            </button>
+
+          </div>
+
+
+          <div
+            id="cart"
+            class="cart"
+          ></div>
+
+
+          <div class="cart-footer">
+
+            <div class="total-row">
+
+              <span>ยอดรวม</span>
+
+              <strong id="cartTotal">
+                ฿0.00
+              </strong>
+
+            </div>
+
+
+            <button
+              id="checkoutButton"
+              class="btn primary full"
+            >
+              ชำระเงิน
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= PRODUCTS ================= -->
+
+    <section
+      id="products"
+      class="view"
+    >
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div>
+            <h2>สินค้า / Stock</h2>
+
+            <p class="muted">
+              จัดการสินค้าและจำนวนคงเหลือ
+            </p>
+          </div>
+
+          <button
+            id="addProductButton"
+            class="btn primary"
+          >
+            + เพิ่มสินค้า
+          </button>
+
+        </div>
+
+
+        <input
+          id="productSearch"
+          class="input"
+          placeholder="ค้นหาสินค้า / Barcode"
+        />
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Barcode</th>
+                <th>สินค้า</th>
+                <th>หมวดหมู่</th>
+                <th>ทุน</th>
+                <th>ขาย</th>
+                <th>Stock</th>
+                <th>สถานะ</th>
+              </tr>
+
+            </thead>
+
+            <tbody
+              id="productTable"
+            ></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= EXPENSE ================= -->
+
+    <section
+      id="expenses"
+      class="view"
+    >
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <h2>ค่าใช้จ่าย</h2>
+
+          <button
+            id="addExpenseButton"
+            class="btn primary"
+          >
+            + เพิ่มค่าใช้จ่าย
+          </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>วันที่</th>
+                <th>รายการ</th>
+                <th>หมวดหมู่</th>
+                <th>จำนวนเงิน</th>
+              </tr>
+
+            </thead>
+
+            <tbody
+              id="expenseTable"
+            ></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= REPORTS ================= -->
+
+    <section
+      id="reports"
+      class="view"
+    >
+
+      <div
+        id="reportCards"
+        class="cards"
+      ></div>
+
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <h2>ประวัติการขาย</h2>
+
+          <button
+            id="exportButton"
+            class="btn"
+          >
+            Export CSV
+          </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>เวลา</th>
+                <th>รายการ</th>
+                <th>ชำระด้วย</th>
+                <th>ยอดขาย</th>
+                <th>กำไร</th>
+              </tr>
+
+            </thead>
+
+            <tbody
+              id="salesTable"
+            ></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+
+<!-- ================= CHECKOUT ================= -->
+
+<dialog id="checkoutDialog">
+
+  <form
+    method="dialog"
+    id="checkoutForm"
+  >
+
+    <div class="dialog-header">
+
+      <h2>ชำระเงิน</h2>
+
+      <button
+        value="cancel"
+        class="icon-button"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <div
+      id="checkoutTotal"
+      class="checkout-total"
+    >
+      ฿0.00
+    </div>
+
+
+    <label>
+
+      ช่องทางชำระ
+
+      <select
+        id="paymentMethod"
+        class="input"
+      >
+
+        <option value="cash">
+          เงินสด
+        </option>
+
+        <option value="transfer">
+          โอน / QR
+        </option>
+
+      </select>
+
+    </label>
+
+
+    <label id="cashField">
+
+      รับเงิน
+
+      <input
+        id="cashReceived"
+        class="input"
+        type="number"
+        min="0"
+        step="0.01"
+      />
+
+    </label>
+
+
+    <div class="change">
+
+      <span>เงินทอน</span>
+
+      <strong id="change">
+        ฿0.00
+      </strong>
+
+    </div>
+
+
+    <button
+      id="confirmSale"
+      class="btn primary full"
+    >
+      ยืนยันการขาย
+    </button>
+
+  </form>
+
+</dialog>
+
+
+
+<!-- ================= ADD PRODUCT ================= -->
+
+<dialog id="productDialog">
+
+  <form
+    method="dialog"
+    id="productForm"
+  >
+
+    <div class="dialog-header">
+
+      <h2>เพิ่มสินค้า</h2>
+
+      <button
+        value="cancel"
+        class="icon-button"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <label>
+      Barcode
+
+      <input
+        id="productBarcode"
+        class="input"
+        required
+      />
+    </label>
+
+
+    <label>
+      ชื่อสินค้า
+
+      <input
+        id="productName"
+        class="input"
+        required
+      />
+    </label>
+
+
+    <label>
+      หมวดหมู่
+
+      <input
+        id="productCategory"
+        class="input"
+        value="ทั่วไป"
+      />
+    </label>
+
+
+    <label>
+      ราคาทุน
+
+      <input
+        id="productCost"
+        class="input"
+        type="number"
+        min="0"
+        step="0.01"
+        required
+      />
+    </label>
+
+
+    <label>
+      ราคาขาย
+
+      <input
+        id="productPrice"
+        class="input"
+        type="number"
+        min="0"
+        step="0.01"
+        required
+      />
+    </label>
+
+
+    <label>
+      Stock
+
+      <input
+        id="productStock"
+        class="input"
+        type="number"
+        min="0"
+        value="0"
+      />
+    </label>
+
+
+    <label>
+      จุดแจ้งเตือน Stock
+
+      <input
+        id="productReorder"
+        class="input"
+        type="number"
+        min="0"
+        value="5"
+      />
+    </label>
+
+
+    <button
+      class="btn primary full"
+    >
+      บันทึกสินค้า
+    </button>
+
+  </form>
+
+</dialog>
+
+
+
+<!-- ================= ADD EXPENSE ================= -->
+
+<dialog id="expenseDialog">
+
+  <form
+    method="dialog"
+    id="expenseForm"
+  >
+
+    <div class="dialog-header">
+
+      <h2>เพิ่มค่าใช้จ่าย</h2>
+
+      <button
+        value="cancel"
+        class="icon-button"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <label>
+
+      รายการ
+
+      <input
+        id="expenseName"
+        class="input"
+        placeholder="เช่น ค่าไฟ"
+        required
+      />
+
+    </label>
+
+
+    <label>
+
+      หมวดหมู่
+
+      <select
+        id="expenseCategory"
+        class="input"
+      >
+
+        <option>สาธารณูปโภค</option>
+        <option>ค่าเช่า</option>
+        <option>ขนส่ง</option>
+        <option>อื่นๆ</option>
+
+      </select>
+
+    </label>
+
+
+    <label>
+
+      จำนวนเงิน
+
+      <input
+        id="expenseAmount"
+        class="input"
+        type="number"
+        min="0"
+        step="0.01"
+        required
+      />
+
+    </label>
+
+
+    <button
+      class="btn primary full"
+    >
+      บันทึก
+    </button>
+
+  </form>
+
+</dialog>
+
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
